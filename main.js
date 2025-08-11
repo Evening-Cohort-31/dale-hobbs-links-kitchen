@@ -1,4 +1,4 @@
-const materials = ['Hylian Rice', 'Big Hearty Truffle', 'Tabantha Wheat', 'Raw Prime Meat', 'Hateno Cheese', 'Bird Egg']
+const materials = ['Hylian Rice', 'Big Hearty Truffle', 'Tabantha Wheat', 'Raw Prime Meat', 'Hateno Cheese', 'Bird Egg', 'Goat Butter', 'Fresh Milk', 'Cane Sugar', 'Raw Bird Thigh']
 
 //store cooked meals
 const meals = []
@@ -25,21 +25,24 @@ const standardize = (ingredient) => {
 const makeKey = (ingredients) => ingredients.map(standardize).sort().join(',')
 
 //store recipes in a Map using canonical keys
+//Map is a constructor function taking an array of entries
+//Our inner arrays are [key, value] pairs here
+//Map has many methods you can use for it's data over a standard object
+//Map methods include .get(key), .has(key), and .set(key,value)
 const recipeBook = new Map([
+    //2 ingredient recipes
     [makeKey(['Hylian Rice', 'Big Hearty Truffle']), 'Mushroom Rice Balls'],
     [makeKey(['Hateno Cheese', 'Bird Egg']), 'Cheesy Omelette'],
     [makeKey(['Tabantha Wheat', 'Hateno Cheese']), 'Cheesy Hylian Pizza'],
     [makeKey(['Raw Prime Meat', 'Hylian Rice']), 'Prime Meat and Rice Bowl'],
-    // add 3+ ingredient recipes the same way:
-    // [makeKey(['Hylian Rice','Raw Prime Meat','Hateno Cheese']), 'Cheesy Prime Meat Bowl'],
+    //3 ingredient recipes
+    [makeKey(['Hylian Rice', 'Raw Prime Meat', 'Hateno Cheese']), 'Cheesy Prime Meat Bowl'],
+    [makeKey(['Fresh Milk', 'Cane Sugar', 'Bird Egg']), 'Egg Pudding'],
+    [makeKey(['Hylian Rice', 'Raw Prime Meat', 'Bird Egg']), 'Chicken Egg Fried Rice'],
+    //4 ingredient recipes
+    [makeKey(['Tabantha Wheat', 'Cane Sugar', 'Goat Butter', 'Bird Egg']), 'Egg Tart'],
+    [makeKey(['Hylian Rice', 'Goat Butter', 'Bird Egg', 'Raw Bird Thigh']), 'Poultry Pilaf']
 ])
-
-//preprocess materials into a Set for faster lookups
-//A Set is a collection of unique values and can use the .has() method
-//materials.map(...) creates a new array where each item in materials has been cleaned up using standardize() function.
-//new Set(...) constructs a new Set object
-//this is removed after the canonical keys method was introduced for the recipes
-//const standardizedMaterials = new Set(materials.map(standardize))
 
 //function that cooks any number of ingredients
 const cook = (...ingredients) => {
@@ -50,8 +53,14 @@ const cook = (...ingredients) => {
         return
     }
 
-    //validate entries
+    //preprocess materials into a Set for faster lookups
+    //A Set is a collection of unique values and can use the .has() method
+    //materials.map(...) creates a new array where each item in materials has been cleaned up using standardize() function.
+    //new Set(...) constructs a new Set object
     const materialSet = new Set(materials.map(standardize))
+    //validate entries with boolean variable
+    //.every() array method returns true if all x => materialSet.has(x) is true
+    //.every() array method returns false if any x=> marerialSet.has(x) is false
     const allValid = ingredients.map(standardize).every(x => materialSet.has(x))
     if (!allValid) {
         console.warn(`One or more ingredients are invalid.`);
@@ -75,6 +84,9 @@ const cook = (...ingredients) => {
 }
 
 cook(materials[1], materials[0])
+cook('Tabantha Wheat', 'Bird Egg')
+cook('Raw Prime Meat', 'Hylian Rice')
+cook('Fresh Milk', 'Cane Sugar', 'Bird Egg')
 
 console.log('MEALS:')
 console.log('---------------')
